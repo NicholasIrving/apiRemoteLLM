@@ -23,6 +23,12 @@
 4. **添加配置**  
    在 `config` 文件中添加相应的配置信息。
 
+5. **运行**
+   在终端中运行：
+   ```
+   python main.py
+   ```
+
 ---
 
 ### 功能
@@ -57,6 +63,9 @@
      - `promptText`
      - `modelText`
      - `temperatureText`
+   
+   - **增加自定义参数**
+     翻译网站基于Libre Translate开发，运行前可在main.py文件中添加对应的参数，参数列表：https://github.com/LibreTranslate/LibreTranslate
 
 #### 4. Cherry Studio / Chatbox  
    - 访问地址：
