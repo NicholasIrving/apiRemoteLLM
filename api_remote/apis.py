@@ -5,7 +5,10 @@ from .ssh_tunnel import stop_tunnel
 def api_openai(local_bind_port, payload):
     url = "http://localhost:{}/v1/chat/completions".format(local_bind_port)
     headers = {"Content-Type": "application/json"}
-    stream = payload["stream"] or False
+    if "stream" in payload:
+        stream = payload["stream"]
+    else:
+        stream = False
 
     try:
         response = requests.post(url, json=payload, headers=headers, stream=stream)
@@ -20,7 +23,10 @@ def api_openai(local_bind_port, payload):
 def api_ollama_generate(local_bind_port, payload):
     url = "http://localhost:{}/api/generate".format(local_bind_port)
     headers = {"Content-Type": "application/json"}
-    stream = payload["stream"] or False
+    if "stream" in payload:
+        stream = payload["stream"]
+    else:
+        stream = False
 
     try:
         response = requests.post(url, json=payload, headers=headers, stream=stream)
