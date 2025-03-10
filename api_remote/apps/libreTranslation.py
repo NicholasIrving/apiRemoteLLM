@@ -44,7 +44,7 @@ def translate(q, source_language, target_language, prompt, model, temperature):
 
     # ssh_tunnel = api.establish_ssh_tunnel_once()
     ssh_tunnel = api.maintain_tunnel()
-
+    load = api.load_params(model)
     response = api.api_ollama_generate(local_bind_port=app.config['local_port'], payload=user_payload)
     return response
 
