@@ -3,13 +3,10 @@ import config, sys, subprocess, os
 import api_remote as api
 from translate_web.main import main as libre_t
 from threading import Thread
-import rumps
 from waitress import serve
-
-
-class LLMAPI(rumps.App):
-    def __init__(self):
-        super(LLMAPI, self).__init__("App", icon="icon.png")
+import pystray
+from pystray import Menu, MenuItem
+from PIL import Image
 
 app = Flask(__name__)
 app.config['public_ip'] = config.PUBLIC_IP
@@ -79,7 +76,6 @@ def cherry_studio():
     result = api.cherry_studio_chat(response)
     return result
 
-
 def main():
 
     t = Thread(target=libretranslate_translate, daemon=True)
@@ -89,7 +85,24 @@ def main():
     server_thread = Thread(target=lambda: serve(app, host='127.0.0.1', port=config.MAIN_PORT), daemon=True)
     server_thread.start()
     print("Start")
-    LLMAPI().run()
+
+    # 定义托盘图标的退出操作
+    def quit_action(icon, item):
+        icon.stop()
+        sys.exit(0)
+
+    # 加载图标图片（确保 icon.png 文件存在）
+    image = Image.open("icon.png")
+
+    # 创建托盘菜单，可根据需要增加其他菜单项
+    menu = Menu(
+        MenuItem("Quit", quit_action),
+    )
+    # 创建托盘图标，标题为 "App"
+    icon = pystray.Icon("App", image, "apiRemoteLLM", menu=menu)
+    # 运行托盘图标（此处为阻塞调用）
+    icon.run()
+
 
 if __name__ == '__main__':
     # 如果环境变量 "DETACHED" 没有设为 "1"，说明当前是父进程
