@@ -60,7 +60,8 @@ def immersive_translate():
 def libretranslate_translate():
     libre_t(**{
                 'port': config.LIBRE_TRANSLATION_PORT,
-                'disable-files-translation': True
+                'disable-files-translation': True,
+                'load_only': 'zh,en'
               }
     )
 
