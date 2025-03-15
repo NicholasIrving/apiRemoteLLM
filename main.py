@@ -136,17 +136,17 @@ def main():
 
 if __name__ == '__main__':
     # 如果环境变量 "DETACHED" 没有设为 "1"，说明当前是父进程
-    # if os.environ.get("DETACHED") != "1":
-    #     # 设置环境变量，让子进程知道已经脱离终端了
-    #     env = os.environ.copy()
-    #     env["DETACHED"] = "1"
-    #     # 不改变 sys.argv，这样服务器可以正常解析通过 -- 传入的参数
-    #     subprocess.Popen([sys.executable] + sys.argv,
-    #                      env=env,
-    #                      start_new_session=True,
-    #                      stdout=subprocess.DEVNULL,
-    #                      stderr=subprocess.DEVNULL)
-    #     # 父进程退出，Terminal 会关闭
-    #     sys.exit(0)
+    if os.environ.get("DETACHED") != "1":
+        # 设置环境变量，让子进程知道已经脱离终端了
+        env = os.environ.copy()
+        env["DETACHED"] = "1"
+        # 不改变 sys.argv，这样服务器可以正常解析通过 -- 传入的参数
+        subprocess.Popen([sys.executable] + sys.argv,
+                         env=env,
+                         start_new_session=True,
+                         stdout=subprocess.DEVNULL,
+                         stderr=subprocess.DEVNULL)
+        # 父进程退出，Terminal 会关闭
+        sys.exit(0)
     main()
 
