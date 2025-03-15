@@ -166,7 +166,7 @@ def filter_unique(seq, extra):
 def create_app(args):
     from libretranslate.init import boot
 
-    # boot(args.load_only, args.update_models, args.force_update_models)
+    boot(args.load_only, args.update_models, args.force_update_models)
 
     from libretranslate.language import load_languages
 

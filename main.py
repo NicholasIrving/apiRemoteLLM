@@ -35,26 +35,23 @@ def zotero_translate():
 
     # 从请求中获取参数（可选）
     user_payload = request.get_json() or {}
-
-    model = api.choose_model(user_payload['model'])
-    user_payload['model'] = model
+    # model = api.choose_model(user_payload['model'])
+    # user_payload['model'] = model
 
     ssh_tunnel = api.maintain_tunnel()
-    load = api.load_params(model)
     response = api.api_openai(local_bind_port= app.config['local_port'], payload=user_payload)
-    result = api.zotero_translate(response, ssh_tunnel)
+    result = api.zotero_translate(response)
     return result
 
 @app.route('/immersive_translate', methods=['POST'])
 def immersive_translate():
     user_payload = request.get_json() or {}
-    model = api.choose_model(user_payload['model'])
-    user_payload['model'] = model
+    # model = api.choose_model(user_payload['model'])
+    # user_payload['model'] = model
 
     ssh_tunnel = api.maintain_tunnel()
-    load = api.load_params(model)
     response = api.api_openai(local_bind_port=app.config['local_port'], payload=user_payload)
-    result = api.immersive_translate(response, ssh_tunnel)
+    result = api.immersive_translate(response)
     return result
 
 def libretranslate_translate():
@@ -68,13 +65,45 @@ def libretranslate_translate():
 @app.route('/cherry_studio', methods=['POST'])
 def cherry_studio():
     user_payload = request.get_json() or {}
-    model = api.choose_model(user_payload['model'])
-    user_payload['model'] = model
+    # model = api.choose_model(user_payload['model'])
+    # user_payload['model'] = model
 
     ssh_tunnel = api.maintain_tunnel()
-    load = api.load_params(model)
-    response = api.api_openai(local_bind_port=app.config['local_port'], payload=user_payload)
+    if api.is_embed(user_payload):
+        response = api.api_openai_embeddings(local_bind_port=app.config['local_port'], payload=user_payload)
+        return api.cherry_studio_embed(response)
+    else:
+        response = api.api_openai(local_bind_port=app.config['local_port'], payload=user_payload)
+        result = api.cherry_studio_chat(response)
+        return result
+
+@app.route('/dify', methods=['POST'])
+def dify():
+    user_payload = request.get_json() or {}
+    # model = api.choose_model(user_payload['model'])
+    # user_payload['model'] = model
+
+    ssh_tunnel = api.maintain_tunnel()
+    response = api.api_ollama_chat(local_bind_port=app.config['local_port'], payload=user_payload)
     result = api.cherry_studio_chat(response)
+    return result
+
+@app.route('/v1/chat/completions', methods=['POST'])
+def completions():
+    # 打印来自 X 程序的所有请求信息
+    # print("----- 收到来自zotero translate的请求 -----")
+    # print("请求方法：", request.method)
+    # print("请求 URL：", request.url)
+    # print("请求 Headers：", dict(request.headers))
+    # print("请求体：", request.get_data(as_text=True))
+    # print("----------------------------------")
+
+
+    # 从请求中获取参数（可选）
+    user_payload = request.get_json() or {}
+    ssh_tunnel = api.maintain_tunnel()
+    response = api.api_openai(local_bind_port= app.config['local_port'], payload=user_payload)
+    result = api.completions(response)
     return result
 
 def main():
@@ -107,17 +136,17 @@ def main():
 
 if __name__ == '__main__':
     # 如果环境变量 "DETACHED" 没有设为 "1"，说明当前是父进程
-    if os.environ.get("DETACHED") != "1":
-        # 设置环境变量，让子进程知道已经脱离终端了
-        env = os.environ.copy()
-        env["DETACHED"] = "1"
-        # 不改变 sys.argv，这样服务器可以正常解析通过 -- 传入的参数
-        subprocess.Popen([sys.executable] + sys.argv,
-                         env=env,
-                         start_new_session=True,
-                         stdout=subprocess.DEVNULL,
-                         stderr=subprocess.DEVNULL)
-        # 父进程退出，Terminal 会关闭
-        sys.exit(0)
+    # if os.environ.get("DETACHED") != "1":
+    #     # 设置环境变量，让子进程知道已经脱离终端了
+    #     env = os.environ.copy()
+    #     env["DETACHED"] = "1"
+    #     # 不改变 sys.argv，这样服务器可以正常解析通过 -- 传入的参数
+    #     subprocess.Popen([sys.executable] + sys.argv,
+    #                      env=env,
+    #                      start_new_session=True,
+    #                      stdout=subprocess.DEVNULL,
+    #                      stderr=subprocess.DEVNULL)
+    #     # 父进程退出，Terminal 会关闭
+    #     sys.exit(0)
     main()
 

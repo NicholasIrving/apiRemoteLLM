@@ -1,11 +1,10 @@
 from flask import Response
 from flask import jsonify
-from ..stream_data_process import generate_stream
+from api_remote.process_output import stream_non_think
 
-
-def immersive_translate(response, ssh_tunnel):
+def immersive_translate(response):
     try:
-        return Response(generate_stream(response, ssh_tunnel), mimetype='text/event-stream')
+        return Response(stream_non_think(response), mimetype='text/event-stream')
     except Exception as e:
         print('immersive_translate返回响应错误')
         raise
