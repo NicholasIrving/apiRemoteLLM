@@ -21,6 +21,7 @@
         2、自定义API地址：http://localhost:5001/immersive_translate，密钥随便填
     
     3、libre translate翻译
+        加载只需要的语言包：libretranslate --load-only en,zh
         1、打开http://localhost:5002，其中5001为config文件中的 '''LIBRE_TRANSLATION_PORT'''
         2、可以在translate_web/templates/app.js.template中修改默认prompt、model及temprature的值，字段分别为promptText、modelText、temperatureText
 
